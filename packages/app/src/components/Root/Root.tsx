@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { Link, makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import ExtensionIcon from '@material-ui/icons/Extension';
@@ -23,7 +23,7 @@ import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
@@ -42,6 +42,8 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import Star from './outline_star_white_24dp.png';
+import StarOutline from './outline_star_outline_white_24dp.png'
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -77,8 +79,44 @@ const SidebarLogo = () => {
   );
 };
 
-export const Root = ({ children }: PropsWithChildren<{}>) => (
-  <SidebarPage>
+const customHeaderComponent = () => {
+    const headerElement = document.getElementsByTagName('header');
+    const textElement = headerElement[0].getElementsByTagName('h1')[0].textContent
+    console.log(textElement);
+    
+
+    if(headerElement && headerElement.length>0){
+      const iconElement = document.createElement('div');
+      if(textElement=="Documentation" || textElement=="APIs"){
+        iconElement.innerHTML = `
+        <div style="display: inline-flex; align-items: center;">
+        <img src=${StarOutline} />
+        </div>
+        `;
+        let toggle = true
+        iconElement.addEventListener("click", function() {
+          const icon = iconElement.getElementsByTagName('img');
+          toggle = !toggle
+          if(toggle){
+            icon[0].src=StarOutline;
+          }
+          else {
+            icon[0].src=Star;
+          }
+        })
+      }
+      headerElement[0].appendChild(iconElement)
+    }    
+  }
+
+export const Root = ({ children }: PropsWithChildren<{}>) => {
+  const location = useLocation();
+  useEffect(()=> {
+    setTimeout(() => {
+      customHeaderComponent();
+    }, 400);
+  }, [location]);
+  return(<SidebarPage>
     <Sidebar>
       <SidebarLogo />
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
@@ -108,5 +146,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
     </Sidebar>
     {children}
-  </SidebarPage>
-);
+  </SidebarPage>)
+  
+  
+  };
