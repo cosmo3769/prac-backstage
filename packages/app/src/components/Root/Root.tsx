@@ -42,8 +42,12 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import Star from './outline_star_white_24dp.png';
-import StarOutline from './outline_star_outline_white_24dp.png'
+import Star from './icons/starfilled.png';
+import StarOutline from './icons/staroutline.png';
+import Person from './icons/person.png'
+import Help from './icons/help.png'
+import NotificationOn from './icons/notificationon.png'
+import NotificationOff from './icons/notificationoff.png'
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -83,25 +87,48 @@ const customHeaderComponent = () => {
     const headerElement = document.getElementsByTagName('header');
     const textElement = headerElement[0].getElementsByTagName('h1')[0].textContent
     console.log(textElement);
-    
 
     if(headerElement && headerElement.length>0){
       const iconElement = document.createElement('div');
+      if(textElement=="My Company Catalog"){
+        iconElement.innerHTML = `
+        <div style="display: inline-flex; align-items: center;">
+          <img src=${Person} />
+          <img src=${Help} />
+        </div>
+        `;
+      }
       if(textElement=="Documentation" || textElement=="APIs"){
         iconElement.innerHTML = `
         <div style="display: inline-flex; align-items: center;">
-        <img src=${StarOutline} />
+          <img src=${StarOutline} />
+          <img src=${NotificationOn} />
+          <img src=${Person} />
+          <img src=${Help} />
         </div>
         `;
-        let toggle = true
-        iconElement.addEventListener("click", function() {
-          const icon = iconElement.getElementsByTagName('img');
-          toggle = !toggle
-          if(toggle){
+        const icon = iconElement.getElementsByTagName('img')
+        console.log(icon)
+        let startoggle=true
+        let notificationtoggle=true
+
+        icon[0].addEventListener("click", function() {
+          startoggle=!startoggle
+          if(startoggle){
             icon[0].src=StarOutline;
           }
-          else {
-            icon[0].src=Star;
+          else{
+            icon[0].src=Star
+          }
+        })
+
+        icon[1].addEventListener("click", function() {
+          notificationtoggle=!notificationtoggle
+          if(notificationtoggle){
+            icon[1].src=NotificationOn
+          }
+          else{
+            icon[1].src=NotificationOff
           }
         })
       }
