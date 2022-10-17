@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { Link, makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import ExtensionIcon from '@material-ui/icons/Extension';
@@ -138,10 +138,17 @@ const customHeaderComponent = () => {
 
 export const Root = ({ children }: PropsWithChildren<{}>) => {
   const location = useLocation();
+  console.log(location)
+  const [prevlocation, setPrevlocation]=useState("")
+  console.log(prevlocation)
   useEffect(()=> {
-    setTimeout(() => {
-      customHeaderComponent();
-    }, 400);
+    if(prevlocation!==location.pathname || prevlocation===""){
+      setTimeout(() => {
+        customHeaderComponent();
+        console.log(location)
+      }, 400);
+      setPrevlocation(location.pathname)
+    }
   }, [location]);
   return(<SidebarPage>
     <Sidebar>
